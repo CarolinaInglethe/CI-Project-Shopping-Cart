@@ -1,5 +1,3 @@
-const elementItems = document.querySelector('.items');
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -44,17 +42,17 @@ function createProductItemElement({ sku, name, image }) {
 // objeto atraves do meu request envio para criar novo elemento:
 function myObjComputer(computer) {
   const { id: sku, title: name, thumbnail: image, price: salePrice } = computer;
-  console.log(computer);
-  return elementItems.appendChild(createProductItemElement({ sku, name, image, salePrice }));
+  return { sku, name, image, salePrice };
 }
 
 // fazendo o request :
 function getAPI(url) {
+  const elementItems = document.querySelector('.items');
   return fetch(url)
   .then((result) => result.json())
   .then((object) => object.results)
   .then((results) => results.forEach((computer) => {
-    myObjComputer(computer);
+    elementItems.appendChild(createProductItemElement(myObjComputer(computer)));
     }));
 }
 
