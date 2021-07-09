@@ -57,12 +57,13 @@ function getAPI(url) {
 }
 
 function clickAddCart(itemAtual) {
-  const idItemAtual = itemAtual.innerHtml;
+  console.log('yeeeh');
+  const idItemAtual = itemAtual.firstElementChild.innerText;
   const urlIdAtt = `https://api.mercadolibre.com/items/$${idItemAtual}`;
   return fetch(urlIdAtt)
   .then((result) => result.json())
   .then((obj) => console.log(obj))
-  .catch((err) => console.log(err));
+  .catch((err) => console.log(`${err}: erroooo`));
 }
 
 function addCartEvent() {
