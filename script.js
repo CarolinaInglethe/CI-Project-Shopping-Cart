@@ -45,7 +45,7 @@ function myObjComputer(computer) {
   return { sku, name, image, salePrice };
 }
 
-// fazendo o request :
+// fazendo o request e adicionando na pag produtos da API :
 function getAPI(url) {
   const elementItems = document.querySelector('.items');
   return fetch(url)
@@ -56,6 +56,24 @@ function getAPI(url) {
     }));
 }
 
+function clickAddCart(itemAtual) {
+  const idItemAtual = itemAtual.innerHtml;
+  const urlIdAtt = `https://api.mercadolibre.com/items/$${idItemAtual}`;
+  return fetch(urlIdAtt)
+  .then((result) => result.json())
+  .then((obj) => console.log(obj))
+  .catch((err) => console.log(err));
+}
+
+function addCartEvent() {
+  const buttonAddCart = document.querySelectorAll('.item__add');
+  const elemtItemApi = document.querySelectorAll('.item');
+  for (let index = 0; index < buttonAddCart.length; index += 1) {
+    buttonAddCart[index].addEventListener('click', clickAddCart(elemtItemApi[index]));
+  }
+}
+
 window.onload = () => {
   getAPI('https://api.mercadolibre.com/sites/MLB/search?q=$computador');
+  addCartEvent();
 };
