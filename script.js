@@ -12,36 +12,46 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+function cartItemClickListener(event) {
+  console.log('xablau');
+  return event;
+}
+
+function createCartItemElement({ sku, name, salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  const carItems = document.querySelector('.cart__items');
+  carItems.appendChild(li);
+  /* meu erro nos eventListenner era chamar a funcao como 
+  parametro direto assim  : cartItemClickListener() / em vez de 
+  : so o nome isso fazia que mesmo quando não clicasse adicionasse tudo */
+  li.addEventListener('click', cartItemClickListener);
+}
+
 // PEGANDO ID DO ITEM ClICADO
 function getSkuFromProductItem(itemSection) {
   const skuItem = itemSection.querySelector('span.item__sku').innerText;
   return skuItem;
 } 
 
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  const carItems = document.querySelector('.car__items');
-  carItems.appendChild(li);
-  // li.addEventListener('click', cartItemClickListener());
-}
-
-/* function cartItemClickListener() {
- 
-} */
-
 // PEGANDO API DO ID E ADICIONANDO NO CARRINHO.
 function getApiItemForCart(event) {
-  const endpointId = `https://api.mercadolibre.com/items/${getSkuFromProductItem(event)}`;
-  return fetch(endpointId)
-  .then((result) => result.json())
+  fetch(`https://api.mercadolibre.com/items/${getSkuFromProductItem(event.target.parentNode)}`)
+    .then((result) => result.json())
   .then((object) => {
-    console.log(object);
     const { id: sku, title: name, price: salePrice } = object;
     createCartItemElement({ sku, name, salePrice });
   })
   .catch((error) => console.log(`${error}: erroooooooo`));
+}
+
+function createCustomButton(button, className, innerText) {
+  const buttonAddCart = document.createElement(button);
+  buttonAddCart.className = className;
+  buttonAddCart.innerText = innerText;
+  buttonAddCart.addEventListener('click', getApiItemForCart);
+  return buttonAddCart;
 }
 
 // CRIA ELEMENTOS HTML COM API INICIAL
@@ -52,10 +62,11 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
-  const buttonAddCart = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
+  section.appendChild(createCustomButton('button', 'item__add', 'Adicionar ao carrinho!'));
   // colocando click no button (requesito 2):
-  buttonAddCart.addEventListener('click', getApiItemForCart(section));
+ /* buttonAddCart.addEventListener('click', getApiItemForCart(section));
   section.appendChild(buttonAddCart);
+  return section; */
   return section;
 }
 
