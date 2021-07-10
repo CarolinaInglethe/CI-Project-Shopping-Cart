@@ -1,7 +1,9 @@
 // FUNCAO DO EVENTO DE REMOVER ITEM DO CART:
 function cartItemClickListener(event) {
   event.target.remove();
-}
+  // ficar salvo no localStorage quando limpar eles tb:
+  // window.localStorage.setItem('cart', document.querySelector('.cart__items').innerHTML);
+} 
 
 // FUNCAO QUE CRIA ELEMENTO ITEM LI COMO FILHO DE LISTA OL:
 function createCartItemElement({ sku, name, salePrice }) {
@@ -14,6 +16,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   parametro direto assim  : cartItemClickListener() / em vez de 
   só o nome, isso fazia que mesmo quando não clicasse adicionasse tudo */
   li.addEventListener('click', cartItemClickListener);
+  // salva no localStorage as li add:
   window.localStorage.setItem('cart', carItems.innerHTML);
   return li;
 }
@@ -91,16 +94,18 @@ function getAPIInitial(url) {
     }));
 }
 
-function buttonClearEvent() {
-  const listCart = document.querySelectorAll('.cart__item');
-  listCart.forEach((li) => {
-    li.remove();
-  });
-}
-
+// LIMPAR TUDO NO CARRINHO:
 function buttonClear() {
   const clearButton = document.querySelector('.empty-cart');
-  clearButton.addEventListener('click', buttonClearEvent);
+  clearButton.addEventListener('click', () => {
+    const listCart = document.querySelectorAll('.cart__item');
+    listCart.forEach((li) => {
+      li.remove();
+    });
+    // limpando também  no localStorage: 
+    const cartItems = document.querySelector('.cart__items'); 
+    window.localStorage.setItem('cart', cartItems.innerHTML);
+  });
 }
 
 window.onload = () => {
