@@ -1,3 +1,38 @@
+// FUNCAO DO EVENTO DE REMOVER ITEM DO CART:
+function cartItemClickListener(event) {
+  event.target.remove();
+}
+
+// FUNCAO QUE CRIA ELEMENTO ITEM LI COMO FILHO DE LISTA OL:
+function createCartItemElement({ sku, name, salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  const carItems = document.querySelector('.cart__items');
+  carItems.appendChild(li);
+  /* meu erro nos eventListenner era chamar a funcao como 
+  parametro direto assim  : cartItemClickListener() / em vez de 
+  só o nome, isso fazia que mesmo quando não clicasse adicionasse tudo */
+  li.addEventListener('click', cartItemClickListener);
+}
+
+// PEGANDO ID DO ITEM ClICADO
+function getSkuFromProductItem(itemSection) {
+  const skuItem = itemSection.querySelector('span.item__sku').innerText;
+  return skuItem;
+} 
+
+// CLIQUE NO BUTTON- API DO ID È ADICIONANDO NO CARRINHO OL:
+function getApiItemForCart(event) {
+  fetch(`https://api.mercadolibre.com/items/${getSkuFromProductItem(event.target.parentNode)}`)
+    .then((result) => result.json())
+  .then((object) => {
+    const { id: sku, title: name, price: salePrice } = object;
+    createCartItemElement({ sku, name, salePrice });
+  })
+  .catch((error) => console.log(`${error}: erroooooooo`));
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -12,40 +47,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function cartItemClickListener(event) {
-  console.log('xablau');
-  return event;
-}
-
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  const carItems = document.querySelector('.cart__items');
-  carItems.appendChild(li);
-  /* meu erro nos eventListenner era chamar a funcao como 
-  parametro direto assim  : cartItemClickListener() / em vez de 
-  : so o nome isso fazia que mesmo quando não clicasse adicionasse tudo */
-  li.addEventListener('click', cartItemClickListener);
-}
-
-// PEGANDO ID DO ITEM ClICADO
-function getSkuFromProductItem(itemSection) {
-  const skuItem = itemSection.querySelector('span.item__sku').innerText;
-  return skuItem;
-} 
-
-// PEGANDO API DO ID E ADICIONANDO NO CARRINHO.
-function getApiItemForCart(event) {
-  fetch(`https://api.mercadolibre.com/items/${getSkuFromProductItem(event.target.parentNode)}`)
-    .then((result) => result.json())
-  .then((object) => {
-    const { id: sku, title: name, price: salePrice } = object;
-    createCartItemElement({ sku, name, salePrice });
-  })
-  .catch((error) => console.log(`${error}: erroooooooo`));
-}
-
+// criaçao espeficica do button para receber evento click:
 function createCustomButton(button, className, innerText) {
   const buttonAddCart = document.createElement(button);
   buttonAddCart.className = className;
