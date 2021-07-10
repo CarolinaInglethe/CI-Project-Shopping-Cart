@@ -5,15 +5,17 @@ function cartItemClickListener(event) {
 
 // FUNCAO QUE CRIA ELEMENTO ITEM LI COMO FILHO DE LISTA OL:
 function createCartItemElement({ sku, name, salePrice }) {
+  const carItems = document.querySelector('.cart__items');
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  const carItems = document.querySelector('.cart__items');
   carItems.appendChild(li);
   /* meu erro nos eventListenner era chamar a funcao como 
   parametro direto assim  : cartItemClickListener() / em vez de 
   só o nome, isso fazia que mesmo quando não clicasse adicionasse tudo */
   li.addEventListener('click', cartItemClickListener);
+  window.localStorage.setItem('cart', carItems.innerHTML);
+  return li;
 }
 
 // PEGANDO ID DO ITEM ClICADO
@@ -91,6 +93,6 @@ function getAPIInitial(url) {
 
 window.onload = () => {
   getAPIInitial('https://api.mercadolibre.com/sites/MLB/search?q=$computador');
-  localStorage.setItem('cart', document.querySelector('.cart__items'));
-  localStorage.getItem('cart');
+  const cartItems = document.querySelector('.cart__items');
+  return cartItems.appendChild(localStorage.getItem('cart').children.innerHTML);
 };
