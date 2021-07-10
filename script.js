@@ -33,6 +33,15 @@ function getApiItemForCart(event) {
   .catch((error) => console.log(`${error}: erroooooooo`));
 }
 
+// criaçao espeficica do button para receber evento click:
+function createCustomButton(button, className, innerText) {
+  const buttonAddCart = document.createElement(button);
+  buttonAddCart.className = className;
+  buttonAddCart.innerText = innerText;
+  buttonAddCart.addEventListener('click', getApiItemForCart);
+  return buttonAddCart;
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -45,15 +54,6 @@ function createCustomElement(element, className, innerText) {
   e.className = className;
   e.innerText = innerText;
   return e;
-}
-
-// criaçao espeficica do button para receber evento click:
-function createCustomButton(button, className, innerText) {
-  const buttonAddCart = document.createElement(button);
-  buttonAddCart.className = className;
-  buttonAddCart.innerText = innerText;
-  buttonAddCart.addEventListener('click', getApiItemForCart);
-  return buttonAddCart;
 }
 
 // CRIA ELEMENTOS HTML COM API INICIAL
@@ -91,4 +91,6 @@ function getAPIInitial(url) {
 
 window.onload = () => {
   getAPIInitial('https://api.mercadolibre.com/sites/MLB/search?q=$computador');
+  localStorage.setItem('cart', document.querySelector('.cart__items'));
+  localStorage.getItem('cart');
 };
