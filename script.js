@@ -1,14 +1,14 @@
 // SALVAR NO LOCAL STORAGE CART ITEMS :
-function saveCartLocalStorage() {
-  const cartItemss = document.querySelector('.cart__items');
-  window.localStorage.setItem('cart', cartItemss.innerHTML);
+function saveCartLocalStorage(cart) {
+  window.localStorage.setItem('cart', cart.innerHTML);
 }
 
 // FUNCAO DO EVENTO DE REMOVER ITEM DO CART:
 function cartItemClickListener(event) {
+  const paiDeLi = event.target.parentNode;
   event.target.remove();
   // ficar salvo no localStorage quando limpar eles tb:
-  saveCartLocalStorage();
+  saveCartLocalStorage(paiDeLi);
 } 
 
 // FUNCAO QUE CRIA ELEMENTO ITEM LI COMO FILHO DE LISTA OL:
@@ -23,7 +23,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   só o nome, isso fazia que mesmo quando não clicasse adicionasse tudo */
   li.addEventListener('click', cartItemClickListener);
   // salva no localStorage as li add:
-  saveCartLocalStorage();
+  saveCartLocalStorage(cartItems);
   return li;
 }
 
@@ -97,7 +97,8 @@ function getAPIInitial(url) {
   .then((object) => object.results)
   .then((results) => results.forEach((computer) => {
     elementItems.appendChild(createProductItemElement(myObjComputer(computer)));
-    }));
+    }))
+  .catch((error) => alert(`${error}: Houve um erro há requisiçao da API inicial !`));
 }
 
 // LIMPAR TUDO NO CARRINHO:
@@ -108,13 +109,14 @@ function buttonClearCart() {
     listCart.forEach((li) => {
       li.remove();
     });
-    // limpando também  no localStorage:  
-    saveCartLocalStorage();
+    // limpando também  no localStorage: 
+    localStorage.removeItem('cart');
   });
 }
 
 window.onload = () => {
   getAPIInitial('https://api.mercadolibre.com/sites/MLB/search?q=$computador');
   buttonClearCart();
-  window.localStorage.getItem('cart');
+  // Quando pag carregar ira colocar no carrinho o que foi salvo no storage
+  document.querySelector('.cart__items').innerHTML = localStorage.getItem('cart');
 };
