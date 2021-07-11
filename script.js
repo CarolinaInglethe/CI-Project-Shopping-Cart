@@ -1,23 +1,29 @@
+// SALVAR NO LOCAL STORAGE CART ITEMS :
+function saveCartLocalStorage() {
+  const cartItemss = document.querySelector('.cart__items');
+  window.localStorage.setItem('cart', cartItemss.innerHTML);
+}
+
 // FUNCAO DO EVENTO DE REMOVER ITEM DO CART:
 function cartItemClickListener(event) {
   event.target.remove();
   // ficar salvo no localStorage quando limpar eles tb:
-  // window.localStorage.setItem('cart', document.querySelector('.cart__items').innerHTML);
+  saveCartLocalStorage();
 } 
 
 // FUNCAO QUE CRIA ELEMENTO ITEM LI COMO FILHO DE LISTA OL:
 function createCartItemElement({ sku, name, salePrice }) {
-  const carItems = document.querySelector('.cart__items');
+  const cartItems = document.querySelector('.cart__items');
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  carItems.appendChild(li);
+  cartItems.appendChild(li);
   /* meu erro nos eventListenner era chamar a funcao como 
   parametro direto assim  : cartItemClickListener() / em vez de 
   só o nome, isso fazia que mesmo quando não clicasse adicionasse tudo */
   li.addEventListener('click', cartItemClickListener);
   // salva no localStorage as li add:
-  window.localStorage.setItem('cart', carItems.innerHTML);
+  saveCartLocalStorage();
   return li;
 }
 
@@ -95,20 +101,20 @@ function getAPIInitial(url) {
 }
 
 // LIMPAR TUDO NO CARRINHO:
-function buttonClear() {
+function buttonClearCart() {
   const clearButton = document.querySelector('.empty-cart');
   clearButton.addEventListener('click', () => {
     const listCart = document.querySelectorAll('.cart__item');
     listCart.forEach((li) => {
       li.remove();
     });
-    // limpando também  no localStorage: 
-    const cartItems = document.querySelector('.cart__items'); 
-    window.localStorage.setItem('cart', cartItems.innerHTML);
+    // limpando também  no localStorage:  
+    saveCartLocalStorage();
   });
 }
 
 window.onload = () => {
   getAPIInitial('https://api.mercadolibre.com/sites/MLB/search?q=$computador');
-  buttonClear();
+  buttonClearCart();
+  window.localStorage.getItem('cart');
 };
