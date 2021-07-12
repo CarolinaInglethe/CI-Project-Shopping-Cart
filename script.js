@@ -1,27 +1,59 @@
+const cartItems = document.querySelector('.cart__items');
+let totalPrice = 0;
+const elementTotalPriceCart = document.querySelector('.total-price');
+console.log(elementTotalPriceCart);
+
+function saveTotalPriceLocalStorage(price) {
+  if (cartItems.length === 0) {
+    cartItems.innerHTML = '';
+  }
+  window.localStorage.setItem('totalPrice', price);
+}
+
+function somaPricesItemsCart(valor) {
+  totalPrice += valor;
+  const totalPriceFixed = parseFloat(totalPrice.toFixed(2));
+  console.log(totalPriceFixed);
+  elementTotalPriceCart.innerText = totalPriceFixed;
+  saveTotalPriceLocalStorage(totalPriceFixed);
+}
+
+function subtraiPricesItemsCart(valor) {
+  totalPrice -= valor;
+  const totalPriceFixed2 = parseFloat(totalPrice.toFixed(2));
+  elementTotalPriceCart.innerText = totalPriceFixed2;
+  saveTotalPriceLocalStorage(totalPriceFixed2);
+}
+
 // SALVAR NO LOCAL STORAGE CART ITEMS :
 function saveCartLocalStorage(cart) {
   window.localStorage.setItem('cart', cart.innerHTML);
 }
 
-// FUNCAO DO EVENTO DE REMOVER ITEM DO CART:
+// FUNCAO DO EVENTO DE REMOVER ITEM DO CART LI:
 function cartItemClickListener(event) {
+  const li = event.target.innerText;
   const paiDeLi = event.target.parentNode;
   event.target.remove();
+  // subtraindo valores totais do cart:
+  const index = li.indexOf('$');
+  const stringPrice = li.substring(index + 1);
+  subtraiPricesItemsCart(parseFloat(stringPrice));
   // ficar salvo no localStorage quando limpar eles tb:
   saveCartLocalStorage(paiDeLi);
-} 
+}
 
 // FUNCAO QUE CRIA ELEMENTO ITEM LI COMO FILHO DE LISTA OL:
 function createCartItemElement({ sku, name, salePrice }) {
-  const cartItems = document.querySelector('.cart__items');
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   cartItems.appendChild(li);
-  /* meu erro nos eventListenner era chamar a funcao como 
-  parametro direto assim  : cartItemClickListener() / em vez de 
-  só o nome, isso fazia que mesmo quando não clicasse adicionasse tudo */
   li.addEventListener('click', cartItemClickListener);
+  // somando os precos de items add no cart:
+  console.log(salePrice);
+  // somaPricesItemsCart(salePrice);
+  somaPricesItemsCart(salePrice);
   // salva no localStorage as li add:
   saveCartLocalStorage(cartItems);
   return li;
@@ -76,10 +108,6 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomButton('button', 'item__add', 'Adicionar ao carrinho!'));
-  // colocando click no button (requesito 2):
- /* buttonAddCart.addEventListener('click', getApiItemForCart(section));
-  section.appendChild(buttonAddCart);
-  return section; */
   return section;
 }
 
@@ -114,7 +142,9 @@ function buttonClearCart() {
     listCart.forEach((li) => {
       li.remove();
     });
-    // limpando também  no localStorage: 
+    localStorage.removeItem('totalPrice');
+    elementTotalPriceCart.innerText = '';
+    // limpando também  no localStorage:
     localStorage.removeItem('cart');
   });
 }
@@ -124,4 +154,5 @@ window.onload = () => {
   buttonClearCart();
   // Quando pag carregar ira colocar no carrinho o que foi salvo no storage
   document.querySelector('.cart__items').innerHTML = localStorage.getItem('cart');
+  document.querySelector('.total-price').innerHTML = localStorage.getItem('totalPrice');
 };
