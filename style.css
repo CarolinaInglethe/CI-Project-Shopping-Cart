@@ -74,3 +74,21 @@
   font-size: 16pt;
   text-align: center;
 }
+
+.loading {
+  width: 50%;
+  background-color: rgba(35, 92, 43, 0.794);
+  color: rgb(49, 51, 53);
+  font-size: 70px;
+  text-align: center;
+  margin: 10px;
+  margin-top: 100px;
+}
+
+body {
+  background-color: rgba(128, 128, 128, 0.329);
+}
+li {
+  margin: 20px;
+}
+
