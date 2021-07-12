@@ -91,12 +91,17 @@ function myObjComputer(computer) {
 
 // API INICIAL :
 function getAPIInitial(url) {
+  const loadingText = document.createElement('p');
+  loadingText.className = 'loading';
+  loadingText.innerText = 'loading...';
+  document.querySelector('body').appendChild(loadingText);
   const elementItems = document.querySelector('.items');
   return fetch(url)
   .then((result) => result.json())
   .then((object) => object.results)
   .then((results) => results.forEach((computer) => {
     elementItems.appendChild(createProductItemElement(myObjComputer(computer)));
+    loadingText.remove();
     }))
   .catch((error) => alert(`${error}: Houve um erro há requisiçao da API inicial !`));
 }
